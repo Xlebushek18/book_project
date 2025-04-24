@@ -23,6 +23,9 @@ interface Props {
     className?: string;
 }
 
+// CartDrawer - компонент для отображения корзины товаров
+// Использует компонент Sheet для создания выдвижной панели
+
 export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({children, className}) => {
     return (
       <Sheet>
