@@ -14,5 +14,10 @@ export { SearchInput} from './search-input';
 export { ProductImage} from './product-image';
 export { GroupVariants } from './group-variants';
 export { IngredientItem } from './ingredient-item';
+export { CartButton } from './cart-button';
+export { CartDrawer } from './cart-drawer';
+export { CartDrawerItem } from './cart-drawer-item';
+export { CountButton } from './count-button';
+export { CountIconButton } from './count-icon-button';
 
 export * from './modals';

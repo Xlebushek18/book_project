@@ -1,21 +1,25 @@
+import React from 'react'
+import { Ingredient, ProductItem } from '@prisma/client';
+
+import { ProductImage } from './product-image';
+import { Title } from './title';
+import { Button } from '../ui';
+import { GroupVariants } from './group-variants';
+import { PizzaSize, PizzaType, pizzaTypes } from '@/shared/constants/pizza';
+import { IngredientItem } from './ingredient-item';
 import { cn } from '@/shared/lib/utils';
- import React from 'react'
- import { ProductImage } from './product-image';
- import { Title } from './title';
- import { Button } from '../ui';
- import { GroupVariants } from './group-variants';
- import { PizzaSize, pizzaSizes, PizzaType, pizzaTypes } from '@/shared/constants/pizza';
- import { Ingredient } from '@prisma/client';
- import { IngredientItem } from './ingredient-item';
+import { usePizzaOptions } from '@/shared/hooks';
+import { getPizzaDetails } from '@/shared/lib';
+
  
  
  interface Props {
     imageUrl: string;
     name: string;
-    className?: string;
     ingredients: Ingredient[];
-    items?: any[];
-    onClickAdd?: VoidFunction;
+    items: ProductItem;
+    onClickAddCart?: VoidFunction;
+    className?: string;
  }
   
  
@@ -24,15 +28,24 @@ import { cn } from '@/shared/lib/utils';
   items,
   imageUrl,
   ingredients,
-  onClickAdd,
+  onClickAddCart,
   className,
  }) => {
-  const [size, setSize] = React.useState<PizzaSize>(20);
-  const [type, setType] = React.useState<PizzaType>(1);
- 
-  const textDetaills = '30 смб традиционное тесто 30';
-  const totalPrice = 350;
- 
+  const { size, type, selectedIngredients, availableSizes, setSize, setType, addIngredient} = 
+    usePizzaOptions(items);
+
+  const {totalPrice, textDetaills} = getPizzaDetails(
+    type, 
+    size, 
+    items, 
+    ingredients,
+    selectedIngredients
+  );
+
+  const handleClickAdd = () => {
+    onClickAddCart?.();
+  }
+
   return (
   <div className={cn(className, 'flex flex-1')}>
  
@@ -47,7 +60,7 @@ import { cn } from '@/shared/lib/utils';
  
   <div className="flex flex-col gap-4 mt-5">
     <GroupVariants 
-      items={pizzaSizes} 
+      items={availableSizes} 
       value={String(size)} 
       onClick={value => setSize(Number(value) as PizzaSize)}
     />
@@ -66,18 +79,20 @@ import { cn } from '@/shared/lib/utils';
       name={ingredient.name}
       price={ingredient.price}
       imageUrl={ingredient.imageUrl}
-      onClick={() => onClickAdd}
+      onClick={() => addIngredient(ingredient.id)}
+      active={selectedIngredients.has(ingredient.id)}
       />
        ))}
     </div>
   </div>
  
   <Button
-  className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
-  Добавить в корзину за {totalPrice} ₽
+    onClick={handleClickAdd}
+    className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
+      Добавить в корзину за {totalPrice} ₽
   </Button>
   </div>
-  </div>
+</div>
   
   )
  }
