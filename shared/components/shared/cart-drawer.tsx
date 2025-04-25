@@ -4,7 +4,6 @@ import React from 'react'
 
 import { 
   Sheet,
-  SheetClose,
   SheetContent,
   SheetFooter,
   SheetHeader,
@@ -15,7 +14,10 @@ import Link from 'next/link';
 import { Button } from '../ui';
 import { ArrowRight } from 'lucide-react';
 import { CartDrawerItem } from './cart-drawer-item';
-import { getCartItemDeteils } from '@/shared/lib';
+import { getCartItemDetails } from '@/shared/lib';
+import { useCartStore } from '@/shared/store';
+import { PizzaSize, PizzaType } from '@/shared/constants/pizza';
+
 
 
 
@@ -27,6 +29,16 @@ interface Props {
 // Использует компонент Sheet для создания выдвижной панели
 
 export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({children, className}) => {
+
+
+    const totalAmount = useCartStore(state => state.totalAmount);
+    const items = useCartStore(state => state.items);
+    const fetchCartItems = useCartStore(state => state.fetchCartItems);
+
+    React.useEffect(() => {
+        fetchCartItems();
+    }, []);
+
     return (
       <Sheet>
          <SheetTrigger asChild>{children}</SheetTrigger>
@@ -35,70 +47,33 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({children, 
 
             <SheetHeader>
               <SheetTitle>
-                В корзине <span className="font-bold">3 товара</span>
+                В корзине <span className="font-bold">{items.length} товара</span>
               </SheetTitle>
             </SheetHeader>
 
             <div className="-mx-6 mt-5 overflow-auto scrollbar flex-1">
               <div className='mb-2'>
-                <CartDrawerItem 
-                  id={1} 
-                  imageUrl={
-                    'https://media.dodostatic.net/image/r:233x233/11EE7D61304FAF5A98A6958F2BB2D260.webp'
-                  } 
-                  details={getCartItemDeteils(2, 30, [{name: 'Сливочная моцарелла'}, {name: 'Сырный бортик'}])} 
-                  name={'Пепперони фреш'} 
-                  price={217} 
-                  quantity={1}            
-                />
-              </div>
-              <div className='mb-2'>
-                <CartDrawerItem 
-                  id={1} 
-                  imageUrl={
-                    'https://media.dodostatic.net/image/r:233x233/11EE7D61304FAF5A98A6958F2BB2D260.webp'
-                  } 
-                  details={getCartItemDeteils(2, 30, [{name: 'Сливочная моцарелла'}, {name: 'Сырный бортик'}])} 
-                  name={'Пепперони фреш'} 
-                  price={217} 
-                  quantity={1}            
-                />
-              </div>
-              <div className='mb-2'>
-                <CartDrawerItem 
-                  id={1} 
-                  imageUrl={
-                    'https://media.dodostatic.net/image/r:233x233/11EE7D61304FAF5A98A6958F2BB2D260.webp'
-                  } 
-                  details={getCartItemDeteils(2, 30, [{name: 'Сливочная моцарелла'}, {name: 'Сырный бортик'}])} 
-                  name={'Пепперони фреш'} 
-                  price={217} 
-                  quantity={1}            
-                />
-              </div>
-              <div className='mb-2'>
-                <CartDrawerItem 
-                  id={1} 
-                  imageUrl={
-                    'https://media.dodostatic.net/image/r:233x233/11EE7D61304FAF5A98A6958F2BB2D260.webp'
-                  } 
-                  details={getCartItemDeteils(2, 30, [{name: 'Сливочная моцарелла'}, {name: 'Сырный бортик'}])} 
-                  name={'Пепперони фреш'} 
-                  price={217} 
-                  quantity={1}            
-                />
-              </div>
-              <div className='mb-2'>
-                <CartDrawerItem 
-                  id={1} 
-                  imageUrl={
-                    'https://media.dodostatic.net/image/r:233x233/11EE7D61304FAF5A98A6958F2BB2D260.webp'
-                  } 
-                  details={getCartItemDeteils(2, 30, [{name: 'Сливочная моцарелла'}, {name: 'Сырный бортик'}])} 
-                  name={'Пепперони фреш'} 
-                  price={217} 
-                  quantity={1}            
-                />
+                {
+                  items.map((item) => (
+                    <CartDrawerItem 
+                      key={item.id}
+                      id={item.id} 
+                      imageUrl={item.imageUrl} 
+                      details={
+                        item.pizzaSize && item.pizzaType 
+                        ? getCartItemDetails(
+                          item.ingredients,
+                          item.pizzaType as PizzaType, 
+                          item.pizzaSize as PizzaSize,
+                        )
+                        : ''
+                      } 
+                      name={item.name} 
+                      price={item.price} 
+                      quantity={item.quantity}            
+                    />
+                  ))
+                }
               </div>
             </div>
 
@@ -111,7 +86,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({children, 
                       <div className="flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2" />
                     </span>
 
-                    <span className="font-bold text-lg">1250 ₽</span>
+                    <span className="font-bold text-lg">{totalAmount} ₽</span>
                   </div>
 
                   <Link href="/cart">
