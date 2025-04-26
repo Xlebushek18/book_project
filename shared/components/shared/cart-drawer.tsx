@@ -18,9 +18,6 @@ import { getCartItemDetails } from '@/shared/lib';
 import { useCartStore } from '@/shared/store';
 import { PizzaSize, PizzaType } from '@/shared/constants/pizza';
 
-
-
-
 interface Props {
     className?: string;
 }
@@ -34,10 +31,18 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({children, 
     const totalAmount = useCartStore(state => state.totalAmount);
     const items = useCartStore(state => state.items);
     const fetchCartItems = useCartStore(state => state.fetchCartItems);
+    const updateItemQuantity = useCartStore(state => state.updateItemQuantity);
+    const removeCartItem = useCartStore(state => state.removeCartItem);
 
     React.useEffect(() => {
         fetchCartItems();
     }, []);
+
+    // Функция для обработки клика по кнопке изменения количества товара в корзине
+    const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
+      const newQuantity = type === 'plus' ? quantity + 1 : quantity - 1;
+      updateItemQuantity(id, newQuantity)
+    }
 
     return (
       <Sheet>
@@ -52,11 +57,10 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({children, 
             </SheetHeader>
 
             <div className="-mx-6 mt-5 overflow-auto scrollbar flex-1">
-              <div className='mb-2'>
                 {
                   items.map((item) => (
+                    <div className='mb-2' key={item.id}>
                     <CartDrawerItem 
-                      key={item.id}
                       id={item.id} 
                       imageUrl={item.imageUrl} 
                       details={
@@ -70,12 +74,14 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({children, 
                       } 
                       name={item.name} 
                       price={item.price} 
-                      quantity={item.quantity}            
+                      quantity={item.quantity}  
+                      onClickCountButton={(type) => onClickCountButton(item.id, item.quantity, type)}
+                      onClickRemove={() => removeCartItem(item.id)}
                     />
+                  </div>
                   ))
                 }
               </div>
-            </div>
 
             <SheetFooter className='-mx-6 bg white p-8'>
                 <div className='w-full'>

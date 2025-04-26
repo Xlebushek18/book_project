@@ -18,20 +18,25 @@ import { getPizzaDetails } from '@/shared/lib';
     name: string;
     ingredients: Ingredient[];
     items: ProductItem;
-    onClickAddCart?: VoidFunction;
+    loading?: boolean;
+    onSubmit: (itemId: number, ingredient: number[]) => void;
     className?: string;
  }
   
+/**
+ * Форма выбора ПИЦЦЫ
+ */
  
  export const ChoosePizzaForm : React.FC<Props> = ({
   name,
   items,
   imageUrl,
   ingredients,
-  onClickAddCart,
+  loading,
+  onSubmit,
   className,
  }) => {
-  const { size, type, selectedIngredients, availableSizes, setSize, setType, addIngredient} = 
+  const { size, type, selectedIngredients, availableSizes, currentItemId, setSize, setType, addIngredient} = 
     usePizzaOptions(items);
 
   const {totalPrice, textDetaills} = getPizzaDetails(
@@ -43,8 +48,10 @@ import { getPizzaDetails } from '@/shared/lib';
   );
 
   const handleClickAdd = () => {
-    onClickAddCart?.();
-  }
+    if (currentItemId) {
+      onSubmit(currentItemId, Array.from(selectedIngredients));
+    }
+  };
 
   return (
   <div className={cn(className, 'flex flex-1')}>
@@ -87,6 +94,7 @@ import { getPizzaDetails } from '@/shared/lib';
   </div>
  
   <Button
+    loading={loading}
     onClick={handleClickAdd}
     className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
       Добавить в корзину за {totalPrice} ₽
