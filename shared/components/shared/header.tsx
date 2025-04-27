@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Container } from './container';
 import Image from 'next/image';
 import { Button } from '../ui';
-import { ArrowRight, ShoppingCart, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { SearchInput } from './search-input';
 import { CartButton } from './cart-button';
 

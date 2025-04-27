@@ -21,28 +21,29 @@ export const ChooseProductModal: React.FC<Props> = ({product, className}) => {
   const router = useRouter();
   const firstItem = product.items[0];
   const isPizzaForm = Boolean(product.items[0].pizzaType);
-  const [addCartItem, loading] = useCartStore(state => [state.addCartItem, state.loading]);
+  const addCartItem = useCartStore(state => state.addCartItem);
+  const loading = useCartStore(state => state.loading);
 
-  const onAddProduct = () => {
-    addCartItem({
-      productItemId: firstItem.id,
-    })
-  }
+
   
-  //запрос на добавление новой пиццы в корзину с выбранными ингредиентами
-  const onAddPizza = async (productItemId: number, ingredients: number[]) => {
+  //Функция, которая вызывается при нажатии на кнопку "Добавить в корзину" и отправляет товар в корзину
+  const onSubmit = async (productItemId?:number, ingredients?: number[]) => {
     try {
+
+      const itemId = productItemId ?? firstItem.id;
+
       await addCartItem({
-        productItemId,
+        productItemId: itemId,
         ingredients,
-      })
-      toast.success('Пицца добавлена в корзину');
-    } catch (err) {
-      toast.error('Не удалось добавить пиццу в корзину');
-      console.error(err);
+      });
       
+        toast.success(product.name + ' добавлена в корзину');
+        router.back();
+    } catch (err) {
+        toast.error('Не удалось добавить товар в корзину');
+        console.error(err);
     }
-  };
+  }
 
   
   
@@ -58,14 +59,14 @@ export const ChooseProductModal: React.FC<Props> = ({product, className}) => {
                 name={product.name} 
                 ingredients={product.ingredients} 
                 items={product.items}
-                onSubmit={onAddPizza}
+                onSubmit={onSubmit}
                 loading={loading}
               />
             ) : (
               <ChooseProductForm 
                 imageUrl={product.imageUrl} 
                 name={product.name}
-                onSubmit={onAddProduct}
+                onSubmit={onSubmit}
                 price={firstItem.price}
                 loading={loading}
               />

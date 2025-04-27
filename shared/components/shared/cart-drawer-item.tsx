@@ -28,7 +28,7 @@ export const CartDrawerItem: React.FC<Props> = ({
 
         <CartItem.Image src={imageUrl} />
 
-        <div className='flex=1'>
+        <div className="flex-1">
           <CartItem.Info name={name} details={details} />
 
           <hr className='my-3'/>
@@ -44,7 +44,6 @@ export const CartDrawerItem: React.FC<Props> = ({
                     size={16}
                   />
               </div>
-
           </div>
         </div>
       </div>

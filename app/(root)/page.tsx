@@ -1,5 +1,6 @@
 import { Container, Filters, ProductsGroupList, Title, TopBar } from "@/shared/components/shared"
 import { prisma } from "@/prisma/prisma-client";
+import { Suspense } from "react";
 
 
 export default async function Home() {
@@ -30,7 +31,9 @@ export default async function Home() {
       {/*Боковая панель фильтрации*/}
 
       <div className="w-[250px]">
+      <Suspense>
         <Filters />
+      </Suspense>
       </div>
 
       {/*Список товаров*/}
