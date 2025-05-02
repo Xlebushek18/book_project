@@ -2,11 +2,9 @@
 
 import { cn } from '@/shared/lib/utils';
 import React from 'react'
-import { Dialog, DialogContent } from '../../ui/dialog';
+import { Dialog, DialogContent } from '@/shared/components/ui/dialog';
 import { useRouter } from 'next/navigation';
-import { ChooseProductForm } from '../choose-product-form';
 import { ProductWithRelations } from '@/@types/prisma';
-import { ChoosePizzaForm } from '../choose-pizza-form';
 import { useCartStore } from '@/shared/store';
 import toast from 'react-hot-toast';
 import { ProductForm } from '../product-form';
