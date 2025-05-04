@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  experimental: {
+    turbo: {
+      rules: {
+        "node_modules/@mapbox/node-pre-gyp/**/*.html": false,
+      },
+    },
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
