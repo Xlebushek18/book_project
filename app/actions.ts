@@ -2,12 +2,12 @@
 
 import { prisma } from '@/prisma/prisma-client';
 import { PayOrderTemplate } from '@/shared/components';
-//import { VerificationUserTemplate } from '@/shared/components/shared/email-temapltes/verification-user';
+import { VerificationUserTemplate } from '@/shared/components/shared/email-temapltes/verification-user';
 import { CheckoutFormValues } from '@/shared/constants';
-import { /*createPayment,*/ sendEmail } from '@/shared/lib';
-//import { getUserSession } from '@/shared/lib/get-user-session';
-import { OrderStatus/*, Prisma*/ } from '@prisma/client';
-//import { hashSync } from 'bcrypt';
+import { sendEmail } from '@/shared/lib';
+import { getUserSession } from '@/shared/lib/get-user-session';
+import { OrderStatus, Prisma } from '@prisma/client';
+import { hashSync } from 'bcrypt';
 import { cookies } from 'next/headers';
 
 //Создаёт заказ пользователя
@@ -80,29 +80,7 @@ export async function createOrder(data: CheckoutFormValues) {
         cartId: userCart.id,
       },
     });
-
-    /*
-    const paymentData = await createPayment({
-      amount: order.totalAmount,
-      orderId: order.id,
-      description: 'Оплата заказа #' + order.id,
-    });
-
-    if (!paymentData) {
-      throw new Error('Payment data not found');
-    }
-
-    await prisma.order.update({
-      where: {
-        id: order.id,
-      },
-      data: {
-        paymentId: paymentData.id,
-      },
-    }); 
-
-    const paymentUrl = paymentData.confirmation.confirmation_url; */
-
+    
     await sendEmail(
       data.email,
       'Next Pizza / Оплатите заказ #' + order.id,
@@ -119,7 +97,7 @@ export async function createOrder(data: CheckoutFormValues) {
   }
 }
 
-/*
+
 //Обновляет информацию о текущем пользователе
 export async function updateUserInfo(body: Prisma.UserUpdateInput) {
   try {
@@ -196,4 +174,4 @@ export async function registerUser(body: Prisma.UserCreateInput) {
     console.log('Error [CREATE_USER]', err);
     throw err;
   }
-} */
+} 
